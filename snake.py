@@ -95,6 +95,35 @@ class GameBoard(Canvas):
                                            , fill = "orange", tag="element")
                 self.locateTarget()
 
+    def checkCollisions(self):
+
+        elements = self.find_withtag("element")
+        head = self.find_withtag("head")
+
+        x1, y1, x2, y2 = self.bbox(head)
+        overlap = self.find_overlapping(x1, y1, x2, y2)
+
+        for element in elements:
+            for over in overlap:
+                if over == element:
+                    self.gameOn = False
+
+        if x1 < - ELEMENT_SIZE:
+            self.gameOn = False
+
+        if x1 > WIDTH:
+            self.gameOn = False
+
+        if y1 < - ELEMENT_SIZE:
+            self.gameOn = False
+
+        if y1 > HEIGHT: 
+            self.gameOn = False
+
+
+
+
+
     def locateTarget(self):
 
         target = self.find_withtag("target")
