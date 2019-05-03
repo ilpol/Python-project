@@ -53,7 +53,7 @@ def updateRating():
         RATING = 1
     else:
         for score in score_list:
-            if COUNT > score:
+            if COUNT >= score:
                 break
             else:
                 cur_rating +=1
@@ -61,6 +61,7 @@ def updateRating():
     RATING = cur_rating
     tmp_label = str(COUNT) + "/" + str(RATING)
     COUNT_LABEL.set(tmp_label)
+
 
 updateRatingTable()
 updateRating()
