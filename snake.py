@@ -190,6 +190,51 @@ class MyApp(Frame):
         self.grid(sticky="nesw")
         #self.create()
 
+
+
+    def create(self):
+        global COUNT,COUNT_LABEL,PAUSE
+        COUNT = 0
+        update_rating_table()
+        update_rating()
+        
+        tmp_label = str(COUNT) + "/" + str(RATING)
+        COUNT_LABEL.set(tmp_label)
+        self.Canvas = GameBoard(self)
+        self.Canvas.grid(row=0, column=0,rowspan = 9, sticky="nesw")
+        self.Canvas.configure(bg="#1c0b00")
+
+        
+
+        self.ControlFrame = Frame(self)
+        self.ControlFrame.grid(row=0, column=1,  sticky="nesw")
+
+
+        self.ControlFrame.ShowColor = Label(self, bg = "#ed125b",fg="#eee",textvariable=COUNT_LABEL)
+        self.ControlFrame.ShowColor.grid(row=0, column=1, sticky="nesw")
+
+        self.ControlFrame.AskColor = Button(self, text="Цвет фона",bg="#ffdaa0",
+                                                  command=lambda:GameBoard.askColor(self,"background"))
+        self.ControlFrame.AskColor.grid(row=1, column=1, sticky="nesw")
+
+        
+
+        self.ControlFrame.SnakeColor = Button(self, text="Цвет змейки",bg="#ffdaa0"
+                                                   ,command=lambda:GameBoard.askColor(self,"snake"))
+        self.ControlFrame.SnakeColor.grid(row=2, column=1, sticky="nesw")
+
+        self.ControlFrame.TargeColor = Button(self, text="Цвет цели",
+                                                   bg="#ffdaa0",command=lambda:GameBoard.askColor(self,"target"))
+        self.ControlFrame.TargeColor.grid(row=3, column=1, sticky="nesw")
+
+        self.ControlFrame.SpeedPlus = Button(self, text="Скорость +",bg="#ffdaa0"
+                                                ,command= lambda: change_speed(1))
+        self.ControlFrame.SpeedPlus.grid(row=4, column=1, sticky="nesw")
+
+        self.ControlFrame.SpeedMinus = Button(self, text="Скорость -",bg="#ffdaa0"
+                                                 ,command= lambda: change_speed(0))
+        self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky="nesw")
+
 app = MyApp(tk)
 tk.bind("<space>", pause)
 tk.bind("<q>", quit)
