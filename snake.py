@@ -136,6 +136,23 @@ class GameBoard(Canvas):
         self.create_rectangle(self.target_x, self.target_y,
                                    self.target_x + DELTA_FOR_BLOCK, self.target_y + DELTA_FOR_BLOCK, 
                                   fill = "yellow", tag="target")
+
+
+    def onTimer(self):
+        global PAUSE
+        if PAUSE == False:
+
+          if self.gameOn:
+            self.checkCollisions()
+            self.checkTarget()
+            self.doMove()
+            self.after(DELAY, self.onTimer)
+
+          else:
+            self.gameOver()
+
+        else:
+          self.after(DELAY, self.onTimer)
         
 
 
