@@ -25,6 +25,27 @@ RATING = 1
 PAUSE = False
 score_list = []
 
+def update_rating_table():
+    global score_list
+    f=open("rating.txt", "r")
+    contents =f.read()
+    score_list = []
+    for score in contents.split("\n"):
+        if score != "":
+          score_list.append(int(score))
+    score_list.append(COUNT)
+    #удаляем повторения
+    score_list = list(set(score_list))
+    score_list.sort(reverse = True)
+    if len(score_list)> 9:
+        score_list = score_list[:9]
+    f.close()
+    f=open("rating.txt", "w")
+    for score in score_list:
+        f.write(str(score) + "\n")
+    f.close()
+
+
 class GameBoard(Canvas):
     def __init__(self, master):
         
@@ -32,6 +53,14 @@ class GameBoard(Canvas):
         #self.init()
 
 
+def pause (par = None):
+    global PAUSE
+    if PAUSE == True:
+        PAUSE = False
+    else:
+        PAUSE = True
+
+        
 class MyApp(Frame):        
 
     def __init__(self, master=None, Title="Змейка"):
