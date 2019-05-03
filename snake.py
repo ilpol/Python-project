@@ -72,6 +72,30 @@ class GameBoard(Canvas):
         #self.init()
 
 
+    def checkTarget(self):
+        global COUNT,COUNT_LABEL
+
+        target = self.find_withtag("target")
+        head = self.find_withtag("head")
+
+        x1, y1, x2, y2 = self.bbox(head)
+        overlap = self.find_overlapping(x1, y1, x2, y2)
+
+        for ovr in overlap:
+
+            if target[0] == ovr:
+                COUNT +=1
+                update_rating()
+                tmp_label = str(COUNT) + "/" + str(RATING)
+                COUNT_LABEL.set(tmp_label)
+                
+                x = self.coords(target)[0]
+                y = self.coords(target)[1]
+                self.create_rectangle(x, y, x + DELTA_FOR_BLOCK, y + DELTA_FOR_BLOCK
+                                           , fill = "orange", tag="element")
+                self.locateTarget()
+
+
 def pause (par = None):
     global PAUSE
     if PAUSE == True:
