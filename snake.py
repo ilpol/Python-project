@@ -1,73 +1,48 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import sys
+import random
+from PIL import Image, ImageTk
+from tkinter import Tk, Frame, Canvas, ALL, NW, Label,Button, StringVar
+from tkinter import colorchooser
 
 
-from tkinter import *
 
-class App(Frame):
+DELTA_FOR_BLOCK = 4
+WIDTH = 300
+HEIGHT = 300
+DELAY = 120
+ELEMENT_SIZE = 10
+ALL_ELEMENTS = WIDTH * HEIGHT / (ELEMENT_SIZE * ELEMENT_SIZE)
+RAND_POSITION = 27
+tk = Tk()
 
-    def __init__(self, master=None, Title="Application"):
+COUNT_LABEL= StringVar()
+
+COUNT = 0
+RATING = 1
+PAUSE = False
+score_list = []
+
+class GameBoard(Canvas):
+    def __init__(self, master):
+        
+        Canvas.__init__(self, master,width=WIDTH, height=HEIGHT)
+        #self.init()
+
+
+class MyApp(Frame):        
+
+    def __init__(self, master=None, Title="Змейка"):
         Frame.__init__(self, master)
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
-        self.grid(sticky=N+E+S+W)
-        self.create()
-        
+        self.grid(sticky="nesw")
+        #self.create()
 
-    def create(self):
-      pass
-
-    
-        
-class Paint(Canvas):
-
-
-    def __init__(self, master=None, *ap, foreground="black", **an):
-        self.foreground = StringVar()
-        self.foreground.set(foreground)
-        Canvas.__init__(self, master, *ap, **an)
-
-
-class MyApp(App):
-
-
-
-    def create(self):
-        self.Canvas = Paint(self)
-        self.Canvas.grid(row=0, column=0,rowspan = 9, sticky=N+E+S+W)
-        self.Canvas.configure(bg="#ffdaa0")
-
-        
-
-        self.ControlFrame = Frame(self)
-        self.ControlFrame.grid(row=0, column=1,  sticky=N+E+S+W)
-
-        self.ControlFrame.ShowColor = Label(self, bg = "#ed125b",fg="#eee",text="Счет")
-        self.ControlFrame.ShowColor.grid(row=0, column=1, sticky=N+E+S+W)
-
-        self.ControlFrame.AskColor = Button(self, text="Цвет фона")
-        self.ControlFrame.AskColor.grid(row=1, column=1, sticky=N+E+S+W)
-
-        
-
-        self.ControlFrame.Copy1 = Button(self, text="Цвет змейки")
-        self.ControlFrame.Copy1.grid(row=2, column=1, sticky=N+E+S+W)
-
-        self.ControlFrame.Copy1 = Button(self, text="Цвет цели")
-        self.ControlFrame.Copy1.grid(row=3, column=1, sticky=N+E+S+W)
-
-        self.ControlFrame.Clear1 = Button(self, text="Скорость")
-        self.ControlFrame.Clear1.grid(row=4, column=1, sticky=N+E+S+W)
-
-        self.ControlFrame.Clear2 = Button(self, text="Завершить")
-        self.ControlFrame.Clear2.grid(row=5, column=1, sticky=N+E+S+W)
-
-        
-
-
-
-app = MyApp(Title="Змейка")
+app = MyApp(tk)
+tk.bind("<space>", pause)
+tk.bind("<q>", quit)
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
-
