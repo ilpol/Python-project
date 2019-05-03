@@ -153,6 +153,22 @@ class GameBoard(Canvas):
 
         else:
           self.after(DELAY, self.onTimer)
+
+
+    def askColor(self,par):
+        if par == "background":
+            col = colorchooser.askColor()[1]
+            self.Canvas.configure(bg=col)
+        elif par == "target":
+            target = self.Canvas.find_withtag("target")
+            col = colorchooser.askColor()[1]            
+            self.Canvas.itemconfig(target, fill=col)
+        elif par == "snake":
+            elements = self.Canvas.find_withtag("element")
+            col = colorchooser.askColor()[1]
+            for element in elements:
+                self.Canvas.itemconfig(element, fill=col)
+
         
 
 
