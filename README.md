@@ -12,6 +12,6 @@
 ### **Тесты**  
 Надо написать тесты для функции, проверяющей столкновения, протестировать ситуации столкновения со всеми стенами и самим с собой, тест, иметирующий нажатие поворотов, проверяющий правильность сортировки рейтинга и т.д.  
 ### **GUI**  
-![GUI](https://github.com/ilpol/Python-project/blob/master/interface.png)
+![GUI](https://github.com/ilpol/Python-project/blob/master/interfaceNew.png)
 
 
