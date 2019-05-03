@@ -95,6 +95,20 @@ class GameBoard(Canvas):
                                            , fill = "orange", tag="element")
                 self.locateTarget()
 
+    def locateTarget(self):
+
+        target = self.find_withtag("target")
+        self.delete(target[0])
+
+        r = random.randint(0, RAND_POSITION)
+        self.target_x = r * ELEMENT_SIZE
+        r = random.randint(0, RAND_POSITION)
+        self.target_y = r * ELEMENT_SIZE
+        self.create_rectangle(self.target_x, self.target_y,
+                                   self.target_x + DELTA_FOR_BLOCK, self.target_y + DELTA_FOR_BLOCK, 
+                                  fill = "yellow", tag="target")
+        
+
 
 def pause (par = None):
     global PAUSE
