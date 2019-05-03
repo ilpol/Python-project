@@ -25,7 +25,7 @@ RATING = 1
 PAUSE = False
 score_list = []
 
-def update_rating_table():
+def updateRatingTable():
     global score_list
     f=open("rating.txt", "r")
     contents =f.read()
@@ -45,7 +45,7 @@ def update_rating_table():
         f.write(str(score) + "\n")
     f.close()
 
-def update_rating():
+def updateRating():
     global score_list
     global RATING
     cur_rating = 1
@@ -62,8 +62,8 @@ def update_rating():
     tmp_label = str(COUNT) + "/" + str(RATING)
     COUNT_LABEL.set(tmp_label)
 
-update_rating_table()
-update_rating()
+updateRatingTable()
+updateRating()
 
 class GameBoard(Canvas):
     def __init__(self, master):
@@ -85,7 +85,7 @@ class GameBoard(Canvas):
 
             if target[0] == ovr:
                 COUNT +=1
-                update_rating()
+                updateRating()
                 tmp_label = str(COUNT) + "/" + str(RATING)
                 COUNT_LABEL.set(tmp_label)
                 
@@ -195,8 +195,8 @@ class MyApp(Frame):
     def create(self):
         global COUNT,COUNT_LABEL,PAUSE
         COUNT = 0
-        update_rating_table()
-        update_rating()
+        updateRatingTable()
+        updateRating()
         
         tmp_label = str(COUNT) + "/" + str(RATING)
         COUNT_LABEL.set(tmp_label)
