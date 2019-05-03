@@ -45,6 +45,25 @@ def update_rating_table():
         f.write(str(score) + "\n")
     f.close()
 
+def update_rating():
+    global score_list
+    global RATING
+    cur_rating = 1
+    if not score_list:
+        RATING = 1
+    else:
+        for score in score_list:
+            if COUNT > score:
+                break
+            else:
+                cur_rating +=1
+
+    RATING = cur_rating
+    tmp_label = str(COUNT) + "/" + str(RATING)
+    COUNT_LABEL.set(tmp_label)
+
+update_rating_table()
+update_rating()
 
 class GameBoard(Canvas):
     def __init__(self, master):
