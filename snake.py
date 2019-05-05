@@ -25,7 +25,7 @@ RATING = 1
 PAUSE = False
 score_list = []
 
-def updateRatingTable():
+def update_rating_table():
     global score_list
     f=open("rating.txt", "r")
     contents =f.read()
@@ -45,7 +45,7 @@ def updateRatingTable():
         f.write(str(score) + "\n")
     f.close()
 
-def updateRating():
+def update_rating():
     global score_list
     global RATING
     cur_rating = 1
@@ -53,7 +53,7 @@ def updateRating():
         RATING = 1
     else:
         for score in score_list:
-            if COUNT >= score:
+            if COUNT > score:
                 break
             else:
                 cur_rating +=1
@@ -62,16 +62,42 @@ def updateRating():
     tmp_label = str(COUNT) + "/" + str(RATING)
     COUNT_LABEL.set(tmp_label)
 
-
-updateRatingTable()
-updateRating()
+update_rating_table()
+update_rating()
 
 class GameBoard(Canvas):
     def __init__(self, master):
         
         Canvas.__init__(self, master,width=WIDTH, height=HEIGHT)
-        #self.init()
+        self.init()
+    def init(self):
 
+        update_rating_table()
+        update_rating()
+
+        self.left = False
+        self.right = True
+        self.up = False
+        self.down = False
+        self.gameOn = True
+        self.elements = 3
+
+        self.target_x = 100
+        self.target_y = 190
+
+        
+
+
+
+
+
+
+        self.focus_get()
+
+        self.createObjects()
+        self.locateTarget()
+        self.bind_all("<Key>", self.onKeyPressed)
+        self.after(DELAY, self.onTimer)
 
     def checkTarget(self):
         global COUNT,COUNT_LABEL
@@ -86,7 +112,7 @@ class GameBoard(Canvas):
 
             if target[0] == ovr:
                 COUNT +=1
-                updateRating()
+                update_rating()
                 tmp_label = str(COUNT) + "/" + str(RATING)
                 COUNT_LABEL.set(tmp_label)
                 
@@ -196,8 +222,8 @@ class MyApp(Frame):
     def create(self):
         global COUNT,COUNT_LABEL,PAUSE
         COUNT = 0
-        updateRatingTable()
-        updateRating()
+        update_rating_table()
+        update_rating()
         
         tmp_label = str(COUNT) + "/" + str(RATING)
         COUNT_LABEL.set(tmp_label)
