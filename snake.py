@@ -98,6 +98,19 @@ class GameBoard(Canvas):
         self.locateTarget()
         self.bind_all("<Key>", self.onKeyPressed)
         self.after(DELAY, self.onTimer)
+    
+    def createObjects(self):
+        self.create_rectangle(self.target_x, self.target_y,self.target_x + 4, self.target_y + 4, 
+                                  fill = "yellow", tag="target")
+        
+        self.create_rectangle(50, 50, 50 + DELTA_FOR_BLOCK, 
+                                    50 + DELTA_FOR_BLOCK, fill = "red", tag="head")
+        self.create_rectangle(30, 50, 30 + DELTA_FOR_BLOCK, 
+                                     50 + DELTA_FOR_BLOCK, fill = "orange", tag="element")
+        self.create_rectangle(40, 50, 40+ DELTA_FOR_BLOCK,
+                                     50+ DELTA_FOR_BLOCK, fill = "orange", tag="element")
+       
+
 
     def checkTarget(self):
         global COUNT,COUNT_LABEL
