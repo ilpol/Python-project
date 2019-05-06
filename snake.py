@@ -135,6 +135,33 @@ class GameBoard(Canvas):
                                            , fill = "orange", tag="element")
                 self.locateTarget()
 
+
+    def doMove(self):
+
+        elements = self.find_withtag("element")
+        head = self.find_withtag("head")
+
+        items = elements + head
+
+        z = 0
+        while z < len(items) - 1:
+            c1 = self.coords(items[z])
+            c2 = self.coords(items[z + 1])
+            self.move(items[z], c2[0] - c1[0], c2[1] - c1[1])
+            z += 1
+
+        if self.left:
+            self.move(head, -ELEMENT_SIZE, 0)
+
+        if self.right:
+            self.move(head, ELEMENT_SIZE, 0)
+
+        if self.up:
+            self.move(head, 0, -ELEMENT_SIZE)
+
+        if self.down:
+            self.move(head, 0, ELEMENT_SIZE)
+
     def checkCollisions(self):
 
         elements = self.find_withtag("element")
