@@ -339,6 +339,11 @@ class MyApp(Frame):
                                                  ,command= lambda: change_speed(0))
         self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky="nesw")
 
+
+    def newGame(self,par = None):
+
+        self.create()
+
 app = MyApp(tk)
 tk.bind("<space>", pause)
 tk.bind("<q>", quit)
