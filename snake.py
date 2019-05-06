@@ -266,7 +266,14 @@ class GameBoard(Canvas):
             for element in elements:
                 self.Canvas.itemconfig(element, fill=col)
 
-        
+
+def changeSpeed(par):
+        global DELAY
+        delt = 50
+        if par ==1:
+            DELAY -= delt
+        else:
+            DELAY += delt        
 
 
 def pause (par = None):
