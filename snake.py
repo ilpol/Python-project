@@ -204,6 +204,30 @@ class GameBoard(Canvas):
                                    self.target_x + DELTA_FOR_BLOCK, self.target_y + DELTA_FOR_BLOCK, 
                                   fill = "yellow", tag="target")
 
+     
+    def onKeyPressed(self, e):
+
+        key = e.keysym
+
+        if key == "Left" and not self.right:
+            self.left = True
+            self.up = False
+            self.down = False
+
+        if key == "Right" and not self.left:
+            self.right = True
+            self.up = False
+            self.down = False
+
+        if key == "Up" and not self.down:
+            self.up = True
+            self.right = False
+            self.left = False
+
+        if key == "Down" and not self.up:
+            self.down = True
+            self.right = False
+            self.left = False
 
     def onTimer(self):
         global PAUSE
