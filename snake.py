@@ -245,7 +245,13 @@ class GameBoard(Canvas):
         else:
           self.after(DELAY, self.onTimer)
 
+    def gameOver(self):
 
+        self.delete(ALL)
+        self.create_text(self.winfo_width() / 2, self.winfo_height() / 2,
+                         text="Game Over", fill="white")
+        update_rating_table()
+        
     def askColor(self,par):
         if par == "background":
             col = colorchooser.askColor()[1]
