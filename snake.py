@@ -25,10 +25,16 @@ RATING = 1
 PAUSE = False
 score_list = []
 
-def update_rating_table():
+def updateRatingTable():
     global score_list
-    f=open("rating.txt", "r")
-    contents =f.read()
+       
+    exists = os.path.isfile('rating.txt')
+    if exists: 
+       f=open("rating.txt", "r")
+       contents =f.read()
+
+    else:
+        contents = ''
     score_list = []
     for score in contents.split("\n"):
         if score != "":
@@ -39,13 +45,14 @@ def update_rating_table():
     score_list.sort(reverse = True)
     if len(score_list)> 9:
         score_list = score_list[:9]
-    f.close()
+    if exists: 
+     f.close()
     f=open("rating.txt", "w")
     for score in score_list:
         f.write(str(score) + "\n")
     f.close()
 
-def update_rating():
+def updateRating():
     global score_list
     global RATING
     cur_rating = 1
@@ -53,7 +60,7 @@ def update_rating():
         RATING = 1
     else:
         for score in score_list:
-            if COUNT > score:
+            if COUNT >= score:
                 break
             else:
                 cur_rating +=1
@@ -62,8 +69,8 @@ def update_rating():
     tmp_label = str(COUNT) + "/" + str(RATING)
     COUNT_LABEL.set(tmp_label)
 
-update_rating_table()
-update_rating()
+updateRatingTable()
+updateRating()
 
 class GameBoard(Canvas):
     def __init__(self, master):
@@ -72,8 +79,8 @@ class GameBoard(Canvas):
         self.init()
     def init(self):
 
-        update_rating_table()
-        update_rating()
+        updateRatingTable()
+        updateRating()
 
         self.left = False
         self.right = True
@@ -125,7 +132,7 @@ class GameBoard(Canvas):
 
             if target[0] == ovr:
                 COUNT +=1
-                update_rating()
+                updateRating()
                 tmp_label = str(COUNT) + "/" + str(RATING)
                 COUNT_LABEL.set(tmp_label)
                 
@@ -250,7 +257,7 @@ class GameBoard(Canvas):
         self.delete(ALL)
         self.create_text(self.winfo_width() / 2, self.winfo_height() / 2,
                          text="Game Over", fill="white")
-        update_rating_table()
+        updateRatingTable()
         
     def askColor(self,par):
         if par == "background":
@@ -299,8 +306,8 @@ class MyApp(Frame):
     def create(self):
         global COUNT,COUNT_LABEL,PAUSE
         COUNT = 0
-        update_rating_table()
-        update_rating()
+        updateRatingTable()
+        updateRating()
         
         tmp_label = str(COUNT) + "/" + str(RATING)
         COUNT_LABEL.set(tmp_label)
@@ -338,6 +345,18 @@ class MyApp(Frame):
         self.ControlFrame.SpeedMinus = Button(self, text="Скорость -",bg="#ffdaa0"
                                                  ,command= lambda: change_speed(0))
         self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky="nesw")
+
+        self.ControlFrame.PauseResume = Button(self, text="Пауза/возобновить",bg="#ffdaa0"
+                                                 ,command= lambda: pause())
+        self.ControlFrame.PauseResume.grid(row=6, column=1, sticky="nesw")
+
+        self.ControlFrame.PauseResume = Button(self, text="Новая игра",bg="#ffdaa0"
+                                                 ,command=  self.newGame)
+        self.ControlFrame.PauseResume.grid(row=7, column=1, sticky="nesw")
+
+
+        self.ControlFrame.Quit = Button(self, text="Завершить",bg="#ffdaa0",command=self.quit)
+        self.ControlFrame.Quit.grid(row=8, column=1, sticky="nesw")
 
 
     def newGame(self,par = None):
