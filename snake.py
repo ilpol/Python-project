@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import sys
 import random
 from PIL import Image, ImageTk
@@ -77,6 +78,7 @@ class GameBoard(Canvas):
         
         Canvas.__init__(self, master,width=WIDTH, height=HEIGHT)
         self.init()
+        
     def init(self):
 
         updateRatingTable()
@@ -91,12 +93,6 @@ class GameBoard(Canvas):
 
         self.target_x = 100
         self.target_y = 190
-
-        
-
-
-
-
 
 
         self.focus_get()
@@ -169,6 +165,7 @@ class GameBoard(Canvas):
         if self.down:
             self.move(head, 0, ELEMENT_SIZE)
 
+
     def checkCollisions(self):
 
         elements = self.find_withtag("element")
@@ -213,7 +210,8 @@ class GameBoard(Canvas):
 
      
     def onKeyPressed(self, e):
-
+        
+        changeSpeed(1, 1)
         key = e.keysym
 
         if key == "Left" and not self.right:
@@ -274,9 +272,8 @@ class GameBoard(Canvas):
                 self.Canvas.itemconfig(element, fill=col)
 
 
-def changeSpeed(par):
+def changeSpeed(par, delt):
         global DELAY
-        delt = 50
         if par ==1:
             DELAY -= delt
         else:
@@ -299,7 +296,7 @@ class MyApp(Frame):
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
         self.grid(sticky="nesw")
-        #self.create()
+        self.create()
 
 
 
@@ -325,25 +322,25 @@ class MyApp(Frame):
         self.ControlFrame.ShowColor.grid(row=0, column=1, sticky="nesw")
 
         self.ControlFrame.AskColor = Button(self, text="Цвет фона",bg="#ffdaa0",
-                                                  command=lambda:GameBoard.askColor(self,"background"))
+                                                  command=lambda:GameBoard.askColor(self, "background"))
         self.ControlFrame.AskColor.grid(row=1, column=1, sticky="nesw")
 
         
 
         self.ControlFrame.SnakeColor = Button(self, text="Цвет змейки",bg="#ffdaa0"
-                                                   ,command=lambda:GameBoard.askColor(self,"snake"))
+                                                   ,command=lambda:GameBoard.askColor(self, "snake"))
         self.ControlFrame.SnakeColor.grid(row=2, column=1, sticky="nesw")
 
         self.ControlFrame.TargeColor = Button(self, text="Цвет цели",
-                                                   bg="#ffdaa0",command=lambda:GameBoard.askColor(self,"target"))
+                                                   bg="#ffdaa0",command=lambda:GameBoard.askColor(self, "target"))
         self.ControlFrame.TargeColor.grid(row=3, column=1, sticky="nesw")
 
         self.ControlFrame.SpeedPlus = Button(self, text="Скорость +",bg="#ffdaa0"
-                                                ,command= lambda: change_speed(1))
+                                                ,command= lambda: changeSpeed(1, 50))
         self.ControlFrame.SpeedPlus.grid(row=4, column=1, sticky="nesw")
 
         self.ControlFrame.SpeedMinus = Button(self, text="Скорость -",bg="#ffdaa0"
-                                                 ,command= lambda: change_speed(0))
+                                                 ,command= lambda: changeSpeed(0, 50))
         self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky="nesw")
 
         self.ControlFrame.PauseResume = Button(self, text="Пауза/возобновить",bg="#ffdaa0"
