@@ -8,6 +8,7 @@ from tkinter import Tk, Frame, Canvas, ALL, Label, Button, StringVar
 from tkinter import colorchooser
 
 import os
+import xml.etree.ElementTree as ET
 
 DELTA_FOR_BLOCK = 4
 WIDTH = 300
@@ -19,62 +20,94 @@ RAND_POSITION = 27
 tk = Tk()
 
 COUNT_LABEL = StringVar()
+RATING_LABEL = StringVar()
 
 COUNT = 0
-RATING = 1
+CUR_RATING = 0
+RATING = 10
+XMLRATING = None
+RATING_FILE = 'rating.xml'
 PAUSE = False
-score_list = []
+rating_list = {}
 
 gettext.install("snake")
 
+def updateRatingTable(score, name):
+    global rating_list, XMLRATING
+    
+    for i in range(10, 0, -1):
+        if CUR_RATING == i:
+            rating_list[i] = name + ':' + str(score)
+        elif CUR_RATING < i:
+            rating_list[i+1] = rating_list[i]
 
-def updateRatingTable():
-    global score_list
+    rating_list.pop(11)
 
-    exists = os.path.isfile('rating.txt')
-    if exists:
-        f = open('rating.txt', 'r')
-        contents = f.read()
+    root = ET.Element('rating_table')
+    rating = {}
+    place = {}
+    name = {}
+    value = {}
 
-    else:
-        contents = ''
-    score_list = []
-    for score in contents.split('\n'):
-        if score != '':
-            score_list.append(int(score))
-    score_list.append(COUNT)
-    # удаляем повторения
-    score_list = list(set(score_list))
-    score_list.sort(reverse=True)
-    if len(score_list) > 9:
-        score_list = score_list[:9]
-    if exists:
-        f.close()
-    f = open('rating.txt', 'w')
-    for score in score_list:
-        f.write(str(score) + '\n')
-    f.close()
+    for i in range(10):
+        divider = rating_list[i+1].find(':')
+        rating[i] = ET.SubElement(root, 'rating')
+        place[i] = ET.SubElement(rating[i], 'place')
+        place[i].text = str(i + 1)
+        name[i] = ET.SubElement(rating[i], 'name')
+        name[i].text = (rating_list[i+1])[:divider]
+        value[i] = ET.SubElement(rating[i], 'value')
+        value[i].text = (rating_list[i+1])[(divider+1):]
 
+    tree = ET.ElementTree(root)
+    tree.write(RATING_FILE, encoding='utf-8')
+
+def loadRating():
+    global rating_list, XMLRATING
+
+    if os.path.isfile(RATING_FILE):
+        xmltree = ET.parse(RATING_FILE)
+        XMLRATING = xmltree.getroot()
+        
+    rating_list = {}
+    
+    for rating in XMLRATING:
+        place = 0
+        value = 0
+        rating_value = ''
+        for item in rating:
+            if item.tag == 'place':
+                place = int(item.text)
+            if item.tag == 'value':
+                value = item.text
+            if item.tag == 'name':
+                rating_value = item.text + ':'
+        rating_value += str(value)
+        rating_list[place] = rating_value
 
 def updateRating():
-    global score_list
-    global RATING
-    cur_rating = 1
-    if not score_list:
-        RATING = 1
+    global score_list, COUNT, RATING, CUR_RATING
+
+    if CUR_RATING != 0:
+        rating_list[CUR_RATING] = rating_list[CUR_RATING].replace('* ', '')
+
+    if not rating_list:
+        CUR_RATING = 0
     else:
-        for score in score_list:
-            if COUNT >= score:
+        for i in range(10):
+            divider = rating_list[i+1].find(':')
+            if COUNT >= int((rating_list[i+1])[(divider+1):]):
+                CUR_RATING = i + 1
                 break
-            else:
-                cur_rating += 1
+    if CUR_RATING != 0:
+        rating_list[CUR_RATING] = '* ' + rating_list[CUR_RATING]
 
-    RATING = cur_rating
-    tmp_label = str(COUNT) + '/' + str(RATING)
-    COUNT_LABEL.set(tmp_label)
+    tmp_label = _("Rating:") + '\n'
+    for i in range(10):
+        tmp_label += rating_list[i+1] + '\n'
+    RATING_LABEL.set(tmp_label)
 
-
-updateRatingTable()
+loadRating()
 updateRating()
 
 
@@ -87,7 +120,7 @@ class GameBoard(Canvas):
     def init(self):
         global LANGUAGE
 
-        updateRatingTable()
+        loadRating()
         updateRating()
 
         self.left = False
@@ -134,7 +167,7 @@ class GameBoard(Canvas):
             if target[0] == ovr:
                 COUNT += 1
                 updateRating()
-                tmp_label = str(COUNT) + '/' + str(RATING)
+                tmp_label = _("Scores:") + '\n' + str(COUNT)
                 COUNT_LABEL.set(tmp_label)
 
                 x = self.coords(target)[0]
@@ -252,11 +285,12 @@ class GameBoard(Canvas):
             self.after(DELAY, self.onTimer)
 
     def gameOver(self):
+        global COUNT
 
         self.delete(ALL)
         self.create_text(self.winfo_width() / 2, self.winfo_height() / 2,
                          text=_("Game Over"), fill='white')
-        updateRatingTable()
+        updateRatingTable(COUNT,"GameTest")
 
     def askColor(self, par):
         if par == 'background':
@@ -294,6 +328,21 @@ class MyApp(Frame):
 
     def __init__(self, master=None, Title=_("Snake")):
         Frame.__init__(self, master)
+        
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=3)
+        self.columnconfigure(2, weight=2)
+        
+        self.rowconfigure(0, weight=2)
+        self.rowconfigure(1, weight=1)
+        self.rowconfigure(2, weight=1)
+        self.rowconfigure(3, weight=1)
+        self.rowconfigure(4, weight=1)
+        self.rowconfigure(5, weight=1)
+        self.rowconfigure(6, weight=1)
+        self.rowconfigure(7, weight=1)
+        self.rowconfigure(8, weight=1)
+        
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
@@ -301,73 +350,85 @@ class MyApp(Frame):
         self.create()
 
     def create(self):
-        global COUNT, COUNT_LABEL, PAUSE, DELAY
+        global COUNT, COUNT_LABEL, PAUSE, DELAY, CUR_RATING, RATING_LABEL, rating_list
         COUNT = 0
         DELAY = 120
-        updateRatingTable()
+        CUR_RATING = 0
+        loadRating()
         updateRating()
 
-        tmp_label = str(COUNT) + '/' + str(RATING)
-        COUNT_LABEL.set(tmp_label)
+        tmp_label = _("Rating:") + '\n'
+        for i in range(10):
+            tmp_label += rating_list[i+1] + '\n'
+        RATING_LABEL.set(tmp_label)
+        
+        self.ControlFrame = Frame(self)
+        self.ControlFrame.grid(row=0, column=2, sticky='nesw')
+
+        self.ControlFrame.Tmp = Label(self, bg='#ffdaa0',
+                                            textvariable=RATING_LABEL)
+        self.ControlFrame.Tmp.grid(row=0,
+                                         column=0, rowspan=10, sticky='nesw')
+
         self.Canvas = GameBoard(self)
-        self.Canvas.grid(row=0, column=0, rowspan=10, sticky='nesw')
+        self.Canvas.grid(row=0, column=1, rowspan=10, sticky='nesw')
         self.Canvas.configure(bg='#1c0b00')
 
-        self.ControlFrame = Frame(self)
-        self.ControlFrame.grid(row=0, column=1, sticky='nesw')
+        tmp_label = _("Scores:") + '\n' + str(COUNT)
+        COUNT_LABEL.set(tmp_label)
 
         self.ControlFrame.ShowColor = Label(self, bg='#ed125b',
                                             fg='#eee',
                                             textvariable=COUNT_LABEL)
         self.ControlFrame.ShowColor.grid(row=0,
-                                         column=1, sticky='nesw')
+                                         column=2, sticky='nesw')
 
         self.ControlFrame.AskColor = Button(
                     self, text=_("Background color"),
                     bg='#ffdaa0',
                     command=lambda: GameBoard.askColor(self, 'background'))
-        self.ControlFrame.AskColor.grid(row=1, column=1, sticky='nesw')
+        self.ControlFrame.AskColor.grid(row=1, column=2, sticky='nesw')
 
         self.ControlFrame.SnakeColor = Button(
                          self, text=_("Snake color"),
                          bg='#ffdaa0',
                          command=lambda: GameBoard.askColor(self, 'snake'))
-        self.ControlFrame.SnakeColor.grid(row=2, column=1, sticky='nesw')
+        self.ControlFrame.SnakeColor.grid(row=2, column=2, sticky='nesw')
 
         self.ControlFrame.TargeColor = Button(
                          self, text=_("Target color"),
                          bg='#ffdaa0',
                          command=lambda: GameBoard.askColor(self, 'target'))
-        self.ControlFrame.TargeColor.grid(row=3, column=1, sticky='nesw')
+        self.ControlFrame.TargeColor.grid(row=3, column=2, sticky='nesw')
 
         self.ControlFrame.SpeedPlus = Button(
                          self, text=_("Speed +"),
                          bg='#ffdaa0',
                          command=lambda: changeSpeed(1, 50))
-        self.ControlFrame.SpeedPlus.grid(row=4, column=1, sticky='nesw')
+        self.ControlFrame.SpeedPlus.grid(row=4, column=2, sticky='nesw')
 
         self.ControlFrame.SpeedMinus = Button(
                          self, text=_("Speed -"),
                          bg='#ffdaa0',
                          command=lambda: changeSpeed(0, 50))
-        self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky='nesw')
+        self.ControlFrame.SpeedMinus.grid(row=5, column=2, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
                          self, text=_("Pause/Resume"),
                          bg='#ffdaa0',
                          command=lambda: pause())
-        self.ControlFrame.PauseResume.grid(row=6, column=1, sticky='nesw')
+        self.ControlFrame.PauseResume.grid(row=6, column=2, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
                          self, text=_("New game"),
                          bg='#ffdaa0',
                          command=self.newGame)
-        self.ControlFrame.PauseResume.grid(row=7, column=1, sticky='nesw')
+        self.ControlFrame.PauseResume.grid(row=7, column=2, sticky='nesw')
 
         self.ControlFrame.Quit = Button(
                          self, text=_("Quit"),
                          bg='#ffdaa0', command=self.quit)
-        self.ControlFrame.Quit.grid(row=8, column=1, sticky='nesw')
+        self.ControlFrame.Quit.grid(row=8, column=2, sticky='nesw')
 
     def newGame(self, par=None):
 
