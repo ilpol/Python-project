@@ -4,7 +4,7 @@
 import gettext
 import random
 
-from tkinter import Tk, Frame, Canvas, ALL, Label, Button, StringVar
+from tkinter import Tk, Frame, Canvas, ALL, Label, Button, StringVar, Entry
 from tkinter import colorchooser
 
 import os
@@ -21,6 +21,7 @@ tk = Tk()
 
 COUNT_LABEL = StringVar()
 RATING_LABEL = StringVar()
+NAME = StringVar()
 
 COUNT = 0
 CUR_RATING = 0
@@ -32,16 +33,17 @@ rating_list = {}
 
 gettext.install("snake")
 
+
 def updateRatingTable(score, name):
     global rating_list, XMLRATING
-    
+
     for i in range(10, 0, -1):
         if CUR_RATING == i:
             rating_list[i] = name + ':' + str(score)
         elif CUR_RATING < i:
             rating_list[i+1] = rating_list[i]
-
-    rating_list.pop(11)
+    if len(rating_list) == 11:
+        rating_list.pop(11)
 
     root = ET.Element('rating_table')
     rating = {}
@@ -62,15 +64,16 @@ def updateRatingTable(score, name):
     tree = ET.ElementTree(root)
     tree.write(RATING_FILE, encoding='utf-8')
 
+
 def loadRating():
     global rating_list, XMLRATING
 
     if os.path.isfile(RATING_FILE):
         xmltree = ET.parse(RATING_FILE)
         XMLRATING = xmltree.getroot()
-        
+
     rating_list = {}
-    
+
     for rating in XMLRATING:
         place = 0
         value = 0
@@ -84,6 +87,7 @@ def loadRating():
                 rating_value = item.text + ':'
         rating_value += str(value)
         rating_list[place] = rating_value
+
 
 def updateRating():
     global score_list, COUNT, RATING, CUR_RATING
@@ -107,13 +111,48 @@ def updateRating():
         tmp_label += rating_list[i+1] + '\n'
     RATING_LABEL.set(tmp_label)
 
+
 loadRating()
 updateRating()
 
 
+class popupWindow(Frame):
+    def __init__(self, master=None, Title=_("Congratulations!")):
+        Frame.__init__(self, master)
+
+        self.columnconfigure(0, weight=1)
+
+        self.rowconfigure(0, weight=2)
+        self.rowconfigure(1, weight=2)
+        self.rowconfigure(2, weight=2)
+        self.rowconfigure(3, weight=1)
+
+        self.master.rowconfigure(0, weight=1)
+        self.master.columnconfigure(0, weight=1)
+        self.master.title(Title)
+
+        self.grid(sticky='nesw')
+
+        self.label1 = Label(self, text=_("You broke some records!"))
+        self.label1.grid(row=0, column=0, sticky='nesw')
+        self.label2 = Label(self, text=_("Please, enter your name:"))
+        self.label2.grid(row=1, column=0, sticky='nesw')
+
+        self.name = Entry(self)
+        self.name.grid(row=2, column=0, sticky='nesw')
+
+        self.ok = Button(self, text='Ok', command=self.cleanup)
+        self.ok.grid(row=3, column=0, sticky='nesw')
+
+    def cleanup(self):
+        global NAME
+        NAME = self.name.get()
+        self.master.destroy()
+
+
 class GameBoard(Canvas):
     def __init__(self, master):
-
+        self.master = master
         Canvas.__init__(self, master, width=WIDTH, height=HEIGHT)
         self.init()
 
@@ -138,6 +177,11 @@ class GameBoard(Canvas):
         self.locateTarget()
         self.bind_all('<Key>', self.onKeyPressed)
         self.after(DELAY, self.onTimer)
+
+    def popup(self):
+        tkpopup = Tk()
+        self.popupWindow = popupWindow(tkpopup)
+        tkpopup.wait_window(self.popupWindow)
 
     def createObjects(self):
         self.create_rectangle(self.target_x, self.target_y,
@@ -286,11 +330,11 @@ class GameBoard(Canvas):
 
     def gameOver(self):
         global COUNT
-
+        self.popup()
+        updateRatingTable(COUNT, NAME)
         self.delete(ALL)
         self.create_text(self.winfo_width() / 2, self.winfo_height() / 2,
                          text=_("Game Over"), fill='white')
-        updateRatingTable(COUNT,"GameTest")
 
     def askColor(self, par):
         if par == 'background':
@@ -328,11 +372,11 @@ class MyApp(Frame):
 
     def __init__(self, master=None, Title=_("Snake")):
         Frame.__init__(self, master)
-        
+
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=3)
         self.columnconfigure(2, weight=2)
-        
+
         self.rowconfigure(0, weight=2)
         self.rowconfigure(1, weight=1)
         self.rowconfigure(2, weight=1)
@@ -342,7 +386,7 @@ class MyApp(Frame):
         self.rowconfigure(6, weight=1)
         self.rowconfigure(7, weight=1)
         self.rowconfigure(8, weight=1)
-        
+
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
@@ -350,7 +394,8 @@ class MyApp(Frame):
         self.create()
 
     def create(self):
-        global COUNT, COUNT_LABEL, PAUSE, DELAY, CUR_RATING, RATING_LABEL, rating_list
+        global COUNT, COUNT_LABEL, PAUSE, DELAY
+        global CUR_RATING, RATING_LABEL, rating_list
         COUNT = 0
         DELAY = 120
         CUR_RATING = 0
@@ -361,14 +406,14 @@ class MyApp(Frame):
         for i in range(10):
             tmp_label += rating_list[i+1] + '\n'
         RATING_LABEL.set(tmp_label)
-        
+
         self.ControlFrame = Frame(self)
         self.ControlFrame.grid(row=0, column=2, sticky='nesw')
 
         self.ControlFrame.Tmp = Label(self, bg='#ffdaa0',
-                                            textvariable=RATING_LABEL)
-        self.ControlFrame.Tmp.grid(row=0,
-                                         column=0, rowspan=10, sticky='nesw')
+                                      textvariable=RATING_LABEL)
+        self.ControlFrame.Tmp.grid(row=0, column=0,
+                                   rowspan=10, sticky='nesw')
 
         self.Canvas = GameBoard(self)
         self.Canvas.grid(row=0, column=1, rowspan=10, sticky='nesw')
