@@ -17,7 +17,6 @@ DELAY = 120
 ELEMENT_SIZE = 10
 ALL_ELEMENTS = WIDTH * HEIGHT / (ELEMENT_SIZE * ELEMENT_SIZE)
 RAND_POSITION = 27
-tk = Tk()
 
 COUNT_LABEL = StringVar()
 RATING_LABEL = StringVar()
@@ -29,7 +28,9 @@ RATING = 10
 XMLRATING = None
 RATING_FILE = 'rating.xml'
 PAUSE = False
+
 rating_list = {}
+tk = Tk()
 
 gettext.install("snake")
 
