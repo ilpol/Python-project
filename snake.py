@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
+import gettext
 import random
 
 from tkinter import Tk, Frame, Canvas, ALL, Label, Button, StringVar
@@ -19,20 +19,13 @@ RAND_POSITION = 27
 tk = Tk()
 
 COUNT_LABEL = StringVar()
-BACKGROUND_LABEL = StringVar()
-SNAKE_COLOR_LABEL = StringVar()
-TARGET_COLOR_LABEL = StringVar()
-SPEED_PLUS_LABEL = StringVar()
-SPEED_MINUS_LABEL = StringVar()
-PAUSE_RESUME_LABEL = StringVar()
-NEW_GAME_LABEL = StringVar()
-ENG_RUS_LABEL = StringVar()
-QUIT_LABEL = StringVar()
 
 COUNT = 0
 RATING = 1
 PAUSE = False
 score_list = []
+
+gettext.install("snake")
 
 
 def updateRatingTable():
@@ -40,14 +33,14 @@ def updateRatingTable():
 
     exists = os.path.isfile('rating.txt')
     if exists:
-        f = open("rating.txt", "r")
+        f = open('rating.txt', 'r')
         contents = f.read()
 
     else:
         contents = ''
     score_list = []
-    for score in contents.split("\n"):
-        if score != "":
+    for score in contents.split('\n'):
+        if score != '':
             score_list.append(int(score))
     score_list.append(COUNT)
     # удаляем повторения
@@ -57,9 +50,9 @@ def updateRatingTable():
         score_list = score_list[:9]
     if exists:
         f.close()
-    f = open("rating.txt", "w")
+    f = open('rating.txt', 'w')
     for score in score_list:
-        f.write(str(score) + "\n")
+        f.write(str(score) + '\n')
     f.close()
 
 
@@ -77,7 +70,7 @@ def updateRating():
                 cur_rating += 1
 
     RATING = cur_rating
-    tmp_label = str(COUNT) + "/" + str(RATING)
+    tmp_label = str(COUNT) + '/' + str(RATING)
     COUNT_LABEL.set(tmp_label)
 
 
@@ -107,43 +100,31 @@ class GameBoard(Canvas):
         self.target_x = 100
         self.target_y = 190
 
-        # 0 русский 1 английский
-        LANGUAGE = 0
-        BACKGROUND_LABEL.set("Цвет фона")
-        SNAKE_COLOR_LABEL.set("Цвет змейки")
-        TARGET_COLOR_LABEL.set("Цвет цели")
-        SPEED_PLUS_LABEL.set("Скорость +")
-        SPEED_MINUS_LABEL.set("Скорость -")
-        PAUSE_RESUME_LABEL.set("Пауза/возобновить")
-        NEW_GAME_LABEL.set("Новая игра")
-        ENG_RUS_LABEL.set("Анг/рус")
-        QUIT_LABEL.set("Завершить")
-
         self.focus_get()
         self.createObjects()
         self.locateTarget()
-        self.bind_all("<Key>", self.onKeyPressed)
+        self.bind_all('<Key>', self.onKeyPressed)
         self.after(DELAY, self.onTimer)
 
     def createObjects(self):
         self.create_rectangle(self.target_x, self.target_y,
                               self.target_x + 4, self.target_y + 4,
-                              fill="yellow", tag="target")
+                              fill='yellow', tag='target')
 
         self.create_rectangle(50, 50, 50 + DELTA_FOR_BLOCK,
-                              50 + DELTA_FOR_BLOCK, fill="red", tag="head")
+                              50 + DELTA_FOR_BLOCK, fill='red', tag='head')
         self.create_rectangle(30, 50, 30 + DELTA_FOR_BLOCK,
-                              50 + DELTA_FOR_BLOCK, fill="orange",
-                              tag="element")
+                              50 + DELTA_FOR_BLOCK, fill='orange',
+                              tag='element')
         self.create_rectangle(40, 50, 40 + DELTA_FOR_BLOCK,
-                              50 + DELTA_FOR_BLOCK, fill="orange",
-                              tag="element")
+                              50 + DELTA_FOR_BLOCK, fill='orange',
+                              tag='element')
 
     def checkTarget(self):
         global COUNT, COUNT_LABEL
 
-        target = self.find_withtag("target")
-        head = self.find_withtag("head")
+        target = self.find_withtag('target')
+        head = self.find_withtag('head')
 
         x1, y1, x2, y2 = self.bbox(head)
         overlap = self.find_overlapping(x1, y1, x2, y2)
@@ -153,7 +134,7 @@ class GameBoard(Canvas):
             if target[0] == ovr:
                 COUNT += 1
                 updateRating()
-                tmp_label = str(COUNT) + "/" + str(RATING)
+                tmp_label = str(COUNT) + '/' + str(RATING)
                 COUNT_LABEL.set(tmp_label)
 
                 x = self.coords(target)[0]
@@ -161,13 +142,13 @@ class GameBoard(Canvas):
                 self.create_rectangle(x, y,
                                       x + DELTA_FOR_BLOCK,
                                       y + DELTA_FOR_BLOCK,
-                                      fill="orange", tag="element")
+                                      fill='orange', tag='element')
                 self.locateTarget()
 
     def doMove(self):
 
-        elements = self.find_withtag("element")
-        head = self.find_withtag("head")
+        elements = self.find_withtag('element')
+        head = self.find_withtag('head')
 
         items = elements + head
 
@@ -192,8 +173,8 @@ class GameBoard(Canvas):
 
     def checkCollisions(self):
 
-        elements = self.find_withtag("element")
-        head = self.find_withtag("head")
+        elements = self.find_withtag('element')
+        head = self.find_withtag('head')
 
         x1, y1, x2, y2 = self.bbox(head)
         overlap = self.find_overlapping(x1, y1, x2, y2)
@@ -217,7 +198,7 @@ class GameBoard(Canvas):
 
     def locateTarget(self):
 
-        target = self.find_withtag("target")
+        target = self.find_withtag('target')
         self.delete(target[0])
 
         r = random.randint(0, RAND_POSITION)
@@ -227,30 +208,29 @@ class GameBoard(Canvas):
         self.create_rectangle(self.target_x, self.target_y,
                               self.target_x + DELTA_FOR_BLOCK,
                               self.target_y + DELTA_FOR_BLOCK,
-                              fill="yellow", tag="target")
+                              fill='yellow', tag='target')
 
     def onKeyPressed(self, e):
-        
         changeSpeed(1, 1)
 
         key = e.keysym
 
-        if key == "Left" and not self.right:
+        if key == 'Left' and not self.right:
             self.left = True
             self.up = False
             self.down = False
 
-        if key == "Right" and not self.left:
+        if key == 'Right' and not self.left:
             self.right = True
             self.up = False
             self.down = False
 
-        if key == "Up" and not self.down:
+        if key == 'Up' and not self.down:
             self.up = True
             self.right = False
             self.left = False
 
-        if key == "Down" and not self.up:
+        if key == 'Down' and not self.up:
             self.down = True
             self.right = False
             self.left = False
@@ -275,19 +255,19 @@ class GameBoard(Canvas):
 
         self.delete(ALL)
         self.create_text(self.winfo_width() / 2, self.winfo_height() / 2,
-                         text="Game Over", fill="white")
+                         text=_("Game Over"), fill='white')
         updateRatingTable()
 
     def askColor(self, par):
-        if par == "background":
+        if par == 'background':
             col = colorchooser.askcolor()[1]
             self.Canvas.configure(bg=col)
-        elif par == "target":
-            target = self.Canvas.find_withtag("target")
+        elif par == 'target':
+            target = self.Canvas.find_withtag('target')
             col = colorchooser.askcolor()[1]
             self.Canvas.itemconfig(target, fill=col)
-        elif par == "snake":
-            elements = self.Canvas.find_withtag("element")
+        elif par == 'snake':
+            elements = self.Canvas.find_withtag('element')
             col = colorchooser.askcolor()[1]
             for element in elements:
                 self.Canvas.itemconfig(element, fill=col)
@@ -295,7 +275,7 @@ class GameBoard(Canvas):
 
 def changeSpeed(par, delt):
     global DELAY
-    
+
     if par == 1:
         DELAY -= delt
     else:
@@ -310,42 +290,14 @@ def pause(par=None):
         PAUSE = True
 
 
-def changeLanguage():
-    global LANGUAGE
-    if LANGUAGE == 0:
-
-        LANGUAGE = 1
-
-        BACKGROUND_LABEL.set("Background")
-        SNAKE_COLOR_LABEL.set("Snake color")
-        TARGET_COLOR_LABEL.set("Target color")
-        SPEED_PLUS_LABEL.set("Speed +")
-        SPEED_MINUS_LABEL.set("Speed -")
-        PAUSE_RESUME_LABEL.set("Pause/Resume")
-        NEW_GAME_LABEL.set("New game")
-        ENG_RUS_LABEL.set("Eng/rus")
-        QUIT_LABEL.set("Quit")
-    else:
-        LANGUAGE = 0
-        BACKGROUND_LABEL.set("Цвет фона")
-        SNAKE_COLOR_LABEL.set("Цвет змейки")
-        TARGET_COLOR_LABEL.set("Цвет цели")
-        SPEED_PLUS_LABEL.set("Скорость +")
-        SPEED_MINUS_LABEL.set("Скорость -")
-        PAUSE_RESUME_LABEL.set("Пауза/возобновить")
-        NEW_GAME_LABEL.set("Новая игра")
-        ENG_RUS_LABEL.set("Анг/рус")
-        QUIT_LABEL.set("Завершить")
-
-
 class MyApp(Frame):
 
-    def __init__(self, master=None, Title="Змейка"):
+    def __init__(self, master=None, Title=_("Snake")):
         Frame.__init__(self, master)
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
-        self.grid(sticky="nesw")
+        self.grid(sticky='nesw')
         self.create()
 
     def create(self):
@@ -355,74 +307,67 @@ class MyApp(Frame):
         updateRatingTable()
         updateRating()
 
-        tmp_label = str(COUNT) + "/" + str(RATING)
+        tmp_label = str(COUNT) + '/' + str(RATING)
         COUNT_LABEL.set(tmp_label)
         self.Canvas = GameBoard(self)
-        self.Canvas.grid(row=0, column=0, rowspan=10, sticky="nesw")
-        self.Canvas.configure(bg="#1c0b00")
+        self.Canvas.grid(row=0, column=0, rowspan=10, sticky='nesw')
+        self.Canvas.configure(bg='#1c0b00')
 
         self.ControlFrame = Frame(self)
-        self.ControlFrame.grid(row=0, column=1, sticky="nesw")
+        self.ControlFrame.grid(row=0, column=1, sticky='nesw')
 
-        self.ControlFrame.ShowColor = Label(self, bg="#ed125b",
-                                            fg="#eee",
+        self.ControlFrame.ShowColor = Label(self, bg='#ed125b',
+                                            fg='#eee',
                                             textvariable=COUNT_LABEL)
         self.ControlFrame.ShowColor.grid(row=0,
-                                         column=1, sticky="nesw")
+                                         column=1, sticky='nesw')
 
         self.ControlFrame.AskColor = Button(
-                    self,
-                    textvariable=BACKGROUND_LABEL,
-                    bg="#ffdaa0",
-                    command=lambda: GameBoard.askColor(self, "background"))
-        self.ControlFrame.AskColor.grid(row=1, column=1, sticky="nesw")
+                    self, text=_("Background color"),
+                    bg='#ffdaa0',
+                    command=lambda: GameBoard.askColor(self, 'background'))
+        self.ControlFrame.AskColor.grid(row=1, column=1, sticky='nesw')
 
         self.ControlFrame.SnakeColor = Button(
-                         self, textvariable=SNAKE_COLOR_LABEL,
-                         bg="#ffdaa0",
-                         command=lambda: GameBoard.askColor(self, "snake"))
-        self.ControlFrame.SnakeColor.grid(row=2, column=1, sticky="nesw")
+                         self, text=_("Snake color"),
+                         bg='#ffdaa0',
+                         command=lambda: GameBoard.askColor(self, 'snake'))
+        self.ControlFrame.SnakeColor.grid(row=2, column=1, sticky='nesw')
 
         self.ControlFrame.TargeColor = Button(
-                         self, textvariable=TARGET_COLOR_LABEL,
-                         bg="#ffdaa0",
-                         command=lambda: GameBoard.askColor(self, "target"))
-        self.ControlFrame.TargeColor.grid(row=3, column=1, sticky="nesw")
+                         self, text=_("Target color"),
+                         bg='#ffdaa0',
+                         command=lambda: GameBoard.askColor(self, 'target'))
+        self.ControlFrame.TargeColor.grid(row=3, column=1, sticky='nesw')
 
         self.ControlFrame.SpeedPlus = Button(
-                         self, textvariable=SPEED_PLUS_LABEL,
-                         bg="#ffdaa0",
+                         self, text=_("Speed +"),
+                         bg='#ffdaa0',
                          command=lambda: changeSpeed(1, 50))
-        self.ControlFrame.SpeedPlus.grid(row=4, column=1, sticky="nesw")
+        self.ControlFrame.SpeedPlus.grid(row=4, column=1, sticky='nesw')
 
         self.ControlFrame.SpeedMinus = Button(
-                         self, textvariable=SPEED_MINUS_LABEL,
-                         bg="#ffdaa0",
+                         self, text=_("Speed -"),
+                         bg='#ffdaa0',
                          command=lambda: changeSpeed(0, 50))
-        self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky="nesw")
+        self.ControlFrame.SpeedMinus.grid(row=5, column=1, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
-                         self, textvariable=PAUSE_RESUME_LABEL,
-                         bg="#ffdaa0",
+                         self, text=_("Pause/Resume"),
+                         bg='#ffdaa0',
                          command=lambda: pause())
-        self.ControlFrame.PauseResume.grid(row=6, column=1, sticky="nesw")
+        self.ControlFrame.PauseResume.grid(row=6, column=1, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
-                         self, textvariable=NEW_GAME_LABEL,
-                         bg="#ffdaa0",
+                         self, text=_("New game"),
+                         bg='#ffdaa0',
                          command=self.newGame)
-        self.ControlFrame.PauseResume.grid(row=7, column=1, sticky="nesw")
-
-        self.ControlFrame.PauseResume = Button(
-                         self, textvariable=ENG_RUS_LABEL,
-                         bg="#ffdaa0",
-                         command=lambda: changeLanguage())
-        self.ControlFrame.PauseResume.grid(row=8, column=1, sticky="nesw")
+        self.ControlFrame.PauseResume.grid(row=7, column=1, sticky='nesw')
 
         self.ControlFrame.Quit = Button(
-                         self, textvariable=QUIT_LABEL,
-                         bg="#ffdaa0", command=self.quit)
-        self.ControlFrame.Quit.grid(row=9, column=1, sticky="nesw")
+                         self, text=_("Quit"),
+                         bg='#ffdaa0', command=self.quit)
+        self.ControlFrame.Quit.grid(row=8, column=1, sticky='nesw')
 
     def newGame(self, par=None):
 
@@ -430,6 +375,6 @@ class MyApp(Frame):
 
 
 app = MyApp(tk)
-tk.bind("<space>", pause)
-tk.bind("<q>", quit)
+tk.bind('<space>', pause)
+tk.bind('<q>', quit)
 app.mainloop()
