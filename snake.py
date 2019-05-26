@@ -10,6 +10,8 @@ from tkinter import colorchooser
 import os
 import xml.etree.ElementTree as ET
 
+tk = Tk()
+
 DELTA_FOR_BLOCK = 4
 WIDTH = 300
 HEIGHT = 300
@@ -30,9 +32,8 @@ RATING_FILE = 'rating.xml'
 PAUSE = False
 
 rating_list = {}
-tk = Tk()
 
-gettext.install("snake")
+gettext.install('snake', '.')
 
 
 def updateRatingTable(score, name):
