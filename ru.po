@@ -1,0 +1,78 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2019 ORGANIZATION
+# <EMAIL@ADDRESS>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2019-05-27 00:52+0300\n"
+"PO-Revision-Date: 2019-05-27 02:15+0300\n"
+"Last-Translator: <EMAIL@ADDRESS>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CP1251\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: snake.py:110 snake.py:406
+msgid "Rating:"
+msgstr "Рейтинг:"
+
+#: snake.py:121
+msgid "Congratulations!"
+msgstr "Поздравляем!"
+
+#: snake.py:137
+msgid "You broke some records!"
+msgstr "Вы побили рекорд!"
+
+#: snake.py:139
+msgid "Please, enter your name:"
+msgstr "Пожалуйста, введите свое имя:"
+
+#: snake.py:215 snake.py:423
+msgid "Scores:"
+msgstr "Очки:"
+
+#: snake.py:338
+msgid "Game Over"
+msgstr "Конец игры"
+
+#: snake.py:374
+msgid "Snake"
+msgstr "Змейка"
+
+#: snake.py:433
+msgid "Background color"
+msgstr "Цвет фона"
+
+#: snake.py:439
+msgid "Snake color"
+msgstr "Цвет змейки"
+
+#: snake.py:445
+msgid "Target color"
+msgstr "Цвет цели"
+
+#: snake.py:451
+msgid "Speed +"
+msgstr "Скорость +"
+
+#: snake.py:457
+msgid "Speed -"
+msgstr "Скорость -"
+
+#: snake.py:463
+msgid "Pause/Resume"
+msgstr "Пауза/возобновить"
+
+#: snake.py:469
+msgid "New game"
+msgstr "Новая игра"
+
+#: snake.py:475
+msgid "Quit"
+msgstr "Завершить"
