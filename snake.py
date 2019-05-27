@@ -86,7 +86,7 @@ def loadRating():
             if item.tag == 'value':
                 value = item.text
             if item.tag == 'name':
-                rating_value = item.text + ':'
+                rating_value = str(item.text) + ':'
         rating_value += str(value)
         rating_list[place] = rating_value
 
@@ -154,6 +154,7 @@ class popupWindow(Frame):
 
 class GameBoard(Canvas):
     def __init__(self, master):
+
         self.master = master
         Canvas.__init__(self, master, width=WIDTH, height=HEIGHT)
         self.init()
@@ -280,9 +281,9 @@ class GameBoard(Canvas):
         target = self.find_withtag('target')
         self.delete(target[0])
 
-        r = random.randint(0, RAND_POSITION)
+        r = random.randint(0, WIDTH//ELEMENT_SIZE)
         self.target_x = r * ELEMENT_SIZE
-        r = random.randint(0, RAND_POSITION)
+        r = random.randint(0, HEIGHT//ELEMENT_SIZE)
         self.target_y = r * ELEMENT_SIZE
         self.create_rectangle(self.target_x, self.target_y,
                               self.target_x + DELTA_FOR_BLOCK,
@@ -315,7 +316,7 @@ class GameBoard(Canvas):
             self.left = False
 
     def onTimer(self):
-        global PAUSE
+        global PAUSE, WIDTH, HEIGHT
         if PAUSE is False:
 
             if self.gameOn:
@@ -329,6 +330,8 @@ class GameBoard(Canvas):
 
         else:
             self.after(DELAY, self.onTimer)
+        WIDTH = self.winfo_width()
+        HEIGHT = self.winfo_height()
 
     def gameOver(self):
         global COUNT
