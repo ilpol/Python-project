@@ -35,8 +35,23 @@ rating_list = {}
 
 gettext.install('snake', '.')
 
+'''
+Игра "Змейка"
+
+Чтобы сгенерировать документацию надо выполнить команду
+
+    pydoc -w snake
+'''
+
 
 def updateRatingTable(score, name):
+    """
+    Обновляет рейтенговую таблицу
+
+    :param score: Счет игрока
+    :param name: Имя игрока
+    :return: ничего не возвращает
+    """
     global rating_list, XMLRATING
 
     for i in range(10, 0, -1):
@@ -68,6 +83,11 @@ def updateRatingTable(score, name):
 
 
 def loadRating():
+    """
+    Загружает рейтенговую таблицу
+
+    :return: ничего не возвращает
+    """
     global rating_list, XMLRATING
 
     if os.path.isfile(RATING_FILE):
@@ -92,6 +112,11 @@ def loadRating():
 
 
 def updateRating():
+    """
+    Обновляет рейтинг игрока
+
+    :return: ничего не возвращает
+    """
     global score_list, COUNT, RATING, CUR_RATING
 
     if CUR_RATING != 0:
@@ -119,7 +144,20 @@ updateRating()
 
 
 class popupWindow(Frame):
+    """
+    Всплывающее окно после проигрыша
+
+    :param Frame: наследует класс Frame
+    """
     def __init__(self, master=None, Title=_("Congratulations!")):
+        """
+        Заполняет параметры всплывающего окна
+
+        :param self: Ссылка на себя
+        :param master: Ссылка на родителя
+        :param Title: Заголовок
+        :return: ничего не возвращает
+        """
         Frame.__init__(self, master)
 
         self.columnconfigure(0, weight=1)
@@ -147,19 +185,44 @@ class popupWindow(Frame):
         self.ok.grid(row=3, column=0, sticky='nesw')
 
     def cleanup(self):
+        """
+        Уничтожает всплывающее окно
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         global NAME
         NAME = self.name.get()
         self.master.destroy()
 
 
 class GameBoard(Canvas):
+    """
+    Игровое поле
+
+    :param Canvas: наследует класс Canvas
+    """
     def __init__(self, master):
+        """
+        Вызывает конструктор родительского класса и функцию,
+        инициализирующую объекты на игровом поле
+
+        :param self: Ссылка на себя
+        :param master: Ссылка на родителя
+        :return: ничего не возвращает
+        """
 
         self.master = master
         Canvas.__init__(self, master, width=WIDTH, height=HEIGHT)
         self.init()
 
     def init(self):
+        """
+        Инициализирует объекты на игровом поле
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         global LANGUAGE
 
         loadRating()
@@ -175,6 +238,9 @@ class GameBoard(Canvas):
         self.target_x = 100
         self.target_y = 190
 
+        
+
+
         self.focus_get()
         self.createObjects()
         self.locateTarget()
@@ -182,11 +248,23 @@ class GameBoard(Canvas):
         self.after(DELAY, self.onTimer)
 
     def popup(self):
+        """
+        Вызывает всплывающее окно
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         tkpopup = Tk()
         self.popupWindow = popupWindow(tkpopup)
         tkpopup.wait_window(self.popupWindow)
 
     def createObjects(self):
+        """
+        Создает объекты на игровом поле
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         self.create_rectangle(self.target_x, self.target_y,
                               self.target_x + 4, self.target_y + 4,
                               fill='yellow', tag='target')
@@ -201,6 +279,12 @@ class GameBoard(Canvas):
                               tag='element')
 
     def checkTarget(self):
+        """
+        Проверяет, достигнула ли змейка цели
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         global COUNT, COUNT_LABEL
 
         target = self.find_withtag('target')
@@ -226,6 +310,12 @@ class GameBoard(Canvas):
                 self.locateTarget()
 
     def doMove(self):
+        """
+        Делает движение всех элементвов змейки на один шаг
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
 
         elements = self.find_withtag('element')
         head = self.find_withtag('head')
@@ -252,6 +342,12 @@ class GameBoard(Canvas):
             self.move(head, 0, ELEMENT_SIZE)
 
     def checkCollisions(self):
+        """
+        Проверяет, столкнулась ли змейка со стенами или сама с собой
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
 
         elements = self.find_withtag('element')
         head = self.find_withtag('head')
@@ -277,6 +373,12 @@ class GameBoard(Canvas):
             self.gameOn = False
 
     def locateTarget(self):
+        """
+        Генерирует местоположение цели
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
 
         target = self.find_withtag('target')
         self.delete(target[0])
@@ -291,6 +393,14 @@ class GameBoard(Canvas):
                               fill='yellow', tag='target')
 
     def onKeyPressed(self, e):
+        """
+        Реагирует на нажатие кнопок и изменяет направление движения
+        змейки
+
+        :param self: Ссылка на себя
+        :param е: кнопка
+        :return: ничего не возвращает
+        """
         changeSpeed(1, 1)
 
         key = e.keysym
@@ -316,6 +426,13 @@ class GameBoard(Canvas):
             self.left = False
 
     def onTimer(self):
+        """
+        После задержки обновляет состояние поля, проверяет столкновения
+        и снова вызывает себя после задержки
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         global PAUSE, WIDTH, HEIGHT
         if PAUSE is False:
 
@@ -333,7 +450,15 @@ class GameBoard(Canvas):
         WIDTH = self.winfo_width()
         HEIGHT = self.winfo_height()
 
+
     def gameOver(self):
+        """
+        Вызывается после проигрыша. Обновляет рейтенговую таблицу, 
+        очищает поле и выводит тект "Игра окончена"
+
+        :param self: Ссылка на себя
+        :return: ничего не возвращает
+        """
         global COUNT
         self.popup()
         updateRatingTable(COUNT, NAME)
@@ -342,6 +467,14 @@ class GameBoard(Canvas):
                          text=_("Game Over"), fill='white')
 
     def askColor(self, par):
+        """
+        Изменяет цвет фона, цели или элементов змейки
+
+        :param self: Ссылка на себя
+        :param par: параметр определяет, изменять ли цвет фона, цели
+        или элементов змейки
+        :return: ничего не возвращает
+        """
         if par == 'background':
             col = colorchooser.askcolor()[1]
             self.Canvas.configure(bg=col)
@@ -357,6 +490,14 @@ class GameBoard(Canvas):
 
 
 def changeSpeed(par, delt):
+    """
+    Увеличивает или уменьшает скорость игры
+
+    :param delt: определяет, на какую величину увеличивать или уменьшать
+    задержку
+    :return: ничего не возвращает
+    """
+
     global DELAY
 
     if par == 1:
@@ -366,6 +507,11 @@ def changeSpeed(par, delt):
 
 
 def pause(par=None):
+    """
+    Ставит игру на паузу
+
+    :return: ничего не возвращает
+    """
     global PAUSE
     if PAUSE is True:
         PAUSE = False
@@ -374,8 +520,23 @@ def pause(par=None):
 
 
 class MyApp(Frame):
+    """
+    Класс игры. Создает все окна и инициализирует игру
+
+    :param Frame: Наследуется от класса Frame
+    :return: ничего не возвращает
+    """
 
     def __init__(self, master=None, Title=_("Snake")):
+        """
+        Инициализирует параметры окна, вызывает функцию, заполняющую
+        параметры игры
+
+        :param self: ссылка на себя
+        :param master: ссылка на родителя
+        :param Title: заголовок
+        :return: ничего не возвращает
+        """
         Frame.__init__(self, master)
 
         self.columnconfigure(0, weight=1)
@@ -399,6 +560,13 @@ class MyApp(Frame):
         self.create()
 
     def create(self):
+        """
+        Инициализирует создает кнопки, игровое поле, вызывает функцию, 
+        инициализирущую параметры и игры и запускающую ее
+
+        :param self: ссылка на себя
+        :return: ничего не возвращает
+        """
         global COUNT, COUNT_LABEL, PAUSE, DELAY
         global CUR_RATING, RATING_LABEL, rating_list
         COUNT = 0
@@ -481,10 +649,17 @@ class MyApp(Frame):
         self.ControlFrame.Quit.grid(row=8, column=2, sticky='nesw')
 
     def newGame(self, par=None):
+        """
+        Создает новую игру
+
+        :param self: ссылка на себя
+        :return: ничего не возвращает
+        """
 
         self.create()
 
 
+    
 app = MyApp(tk)
 tk.bind('<space>', pause)
 tk.bind('<q>', quit)
