@@ -37,6 +37,14 @@ class MyTest(unittest.TestCase):
         sn.checkCollisions()
         self.assertEqual(sn.gameOn, False)
 
+    def test_collision_down_true(self):
+        tmp = tkinter.Frame()
+        sn = snake.GameBoard(tmp)
+        head = sn.find_withtag("head")
+        sn.move(head, 0, 1)
+        sn.checkCollisions()
+        self.assertEqual(sn.gameOn, True)
+
 
 if __name__ == '__main__':
     unittest.main()
