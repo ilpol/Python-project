@@ -666,7 +666,7 @@ class MyApp(Frame):
 
         self.ControlFrame.PauseResume = Button(
             self, text=_("New game"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=self.newGame)
         self.ControlFrame.PauseResume.grid(row=7, column=2, sticky='nesw')
 
