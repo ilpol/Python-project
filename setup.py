@@ -15,7 +15,7 @@ setuptools.setup(
     url="https://github.com/ilpol/Python-project",
     packages=setuptools.find_packages() + ['snake/rating'],
     setup_require=["mo_installer"],
-    locale_src='./snake',
+    locale_src='./locale',
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
