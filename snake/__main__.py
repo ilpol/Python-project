@@ -8,6 +8,7 @@ from tkinter import Tk, Frame, Canvas, ALL, Label, Button, StringVar, Entry
 from tkinter import colorchooser
 
 import os
+import sys
 import xml.etree.ElementTree as ET
 
 tk = Tk()
@@ -28,11 +29,18 @@ COUNT = 0
 CUR_RATING = 0
 RATING = 10
 XMLRATING = None
-RATING_FILE = 'rating/rating.xml'
+PATH = os.path.dirname(sys.argv[0])
+RATING_FILE = os.path.join(PATH, 'rating.xml') 
 PAUSE = False
 
 rating_list = {}
-colors = {'fg':'black', 'bgbutton':'#ffdaa0', 'bgcanvas':'#1c0b00', 'bgscore':'#ed125b'}
+
+colors = {'fg': 'black',
+          'fgscore': 'white',
+          'bgbutton': '#ffdaa0',
+          'bgcanvas': '#1c0b00',
+          'bgscore': '#ed125b'}
+
 gettext.install('snake', '.')
 
 '''
@@ -90,9 +98,28 @@ def loadRating():
     """
     global rating_list, XMLRATING
 
-    if os.path.isfile(RATING_FILE):
-        xmltree = ET.parse(RATING_FILE)
-        XMLRATING = xmltree.getroot()
+    if not os.path.isfile(RATING_FILE):
+
+        root = ET.Element('rating_table')
+        rating = {}
+        place = {}
+        name = {}
+        value = {}
+
+        for i in range(10):
+            rating[i] = ET.SubElement(root, 'rating')
+            place[i] = ET.SubElement(rating[i], 'place')
+            place[i].text = str(i + 1)
+            name[i] = ET.SubElement(rating[i], 'name')
+            name[i].text = 'Test' + str(i + 1)
+            value[i] = ET.SubElement(rating[i], 'value')
+            value[i].text = str(10 - i)
+
+        tree = ET.ElementTree(root)
+        tree.write(RATING_FILE, encoding='utf-8')
+
+    xmltree = ET.parse(RATING_FILE)
+    XMLRATING = xmltree.getroot()
 
     rating_list = {}
 
@@ -172,16 +199,17 @@ class popupWindow(Frame):
         self.master.title(Title)
         self.grid(sticky='nesw')
         self.label1 = Label(self, text=_("You broke some records!"), 
-            bg=colors.get('bgbutton'), fg=colors.get('fg'))
+            bg=colors['bgbutton'], fg=colors['fg'])
         self.label1.grid(row=0, column=0, sticky='nesw')
         self.label2 = Label(self, text=_("Please, enter your name:"), 
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),)
+            bg=colors['bgbutton'], fg=colors['fg'])
         self.label2.grid(row=1, column=0, sticky='nesw')
 
-        self.name = Entry(self)
+        self.name = Entry(self, bg=colors['bgscore'], fg=colors['fgscore'])
         self.name.grid(row=2, column=0, sticky='nesw')
 
-        self.ok = Button(self, text='Ok', command=self.cleanup)
+        self.ok = Button(self, text='Ok', bg=colors['bgbutton'],
+            fg=colors['fg'], command=self.cleanup)
         self.ok.grid(row=3, column=0, sticky='nesw')
 
     def cleanup(self):
@@ -213,7 +241,9 @@ class GameBoard(Canvas):
         """
 
         self.master = master
-        Canvas.__init__(self, master, width=WIDTH, height=HEIGHT)
+        Canvas.__init__(self, master,
+            width=WIDTH+DELTA_FOR_BLOCK,
+            height=HEIGHT+DELTA_FOR_BLOCK)
         self.init()
 
     def init(self):
@@ -582,69 +612,67 @@ class MyApp(Frame):
         self.ControlFrame = Frame(self)
         self.ControlFrame.grid(row=0, column=2, sticky='nesw')
 
-        self.ControlFrame.Tmp = Label(self, bg=colors.get('bgbutton'),
-            fg=colors.get('fg'), textvariable=RATING_LABEL)
+        self.ControlFrame.Tmp = Label(self, bg=colors['bgbutton'],
+            fg=colors['fg'], textvariable=RATING_LABEL, width = 10)
         self.ControlFrame.Tmp.grid(row=0, column=0,
             rowspan=10, sticky='nesw')
 
         self.Canvas = GameBoard(self)
         self.Canvas.grid(row=0, column=1, rowspan=10, sticky='nesw')
-        self.Canvas.configure(bg=colors.get('bgcanvas'))
+        self.Canvas.configure(bg=colors['bgcanvas'])
 
         tmp_label = _("Scores:") + '\n' + str(COUNT)
         COUNT_LABEL.set(tmp_label)
 
-        self.ControlFrame.ShowColor = Label(self, bg=colors.get('bgscore'),
-                                            fg=colors.get('fg'),
-                                            textvariable=COUNT_LABEL)
-        self.ControlFrame.ShowColor.grid(row=0,
-                                         column=2, sticky='nesw')
+        self.ControlFrame.ShowColor = Label(self, bg=colors['bgscore'],
+            fg=colors['fgscore'], textvariable=COUNT_LABEL)
+        self.ControlFrame.ShowColor.grid(row=0, column=2, sticky='nesw')
 
         self.ControlFrame.AskColor = Button(
             self, text=_("Background color"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: GameBoard.askColor(self, 'background'))
         self.ControlFrame.AskColor.grid(row=1, column=2, sticky='nesw')
 
         self.ControlFrame.SnakeColor = Button(
             self, text=_("Snake color"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: GameBoard.askColor(self, 'snake'))
         self.ControlFrame.SnakeColor.grid(row=2, column=2, sticky='nesw')
 
         self.ControlFrame.TargeColor = Button(
             self, text=_("Target color"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: GameBoard.askColor(self, 'target'))
         self.ControlFrame.TargeColor.grid(row=3, column=2, sticky='nesw')
 
         self.ControlFrame.SpeedPlus = Button(
             self, text=_("Speed +"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: changeSpeed(1, 50))
         self.ControlFrame.SpeedPlus.grid(row=4, column=2, sticky='nesw')
 
         self.ControlFrame.SpeedMinus = Button(
             self, text=_("Speed -"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: changeSpeed(0, 50))
         self.ControlFrame.SpeedMinus.grid(row=5, column=2, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
             self, text=_("Pause/Resume"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=lambda: pause())
         self.ControlFrame.PauseResume.grid(row=6, column=2, sticky='nesw')
 
         self.ControlFrame.PauseResume = Button(
             self, text=_("New game"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'),
+            bg=colors['bgbutton'], fg=colors['fg'],
             command=self.newGame)
         self.ControlFrame.PauseResume.grid(row=7, column=2, sticky='nesw')
 
         self.ControlFrame.Quit = Button(
             self, text=_("Quit"),
-            bg=colors.get('bgbutton'), fg=colors.get('fg'), command=self.quit)
+            bg=colors['bgbutton'], fg=colors['fg'], command=self.quit)
         self.ControlFrame.Quit.grid(row=8, column=2, sticky='nesw')
 
     def newGame(self, par=None):
