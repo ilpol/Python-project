@@ -28,7 +28,7 @@ COUNT = 0
 CUR_RATING = 0
 RATING = 10
 XMLRATING = None
-RATING_FILE = '/home/a/snake/snake/rating/rating.xml'
+RATING_FILE = 'rating/rating.xml'
 PAUSE = False
 
 rating_list = {}
