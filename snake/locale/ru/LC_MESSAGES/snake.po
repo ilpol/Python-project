@@ -1,79 +1,78 @@
 # Russian translations for PACKAGE package
-# Английские переводы для пакета PACKAGE.
+# Àíãëèéñêèå ïåðåâîäû äëÿ ïàêåòà PACKAGE.
 # Copyright (C) 2019 ORGANIZATION
-# A <a@a-hp-15-notebook-pc>, 2019.
-# 
+# <EMAIL@ADDRESS>, 2019.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2019-05-27 02:37+0300\n"
-"PO-Revision-Date: 2019-05-27 22:16+0300\n"
-"Last-Translator: A <a@a-hp-15-notebook-pc>\n"
+"POT-Creation-Date: 2019-05-28 20:18+0300\n"
+"PO-Revision-Date: 2019-05-28 20:19+0300\n"
+"Last-Translator: <EMAIL@ADDRESS>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CP1251\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: snake.py:111 snake.py:407
+#: __main__.py:163 __main__.py:607
 msgid "Rating:"
 msgstr "Рейтинг"
 
-#: snake.py:122
+#: __main__.py:179
 msgid "Congratulations!"
 msgstr "Поздравляем!"
 
-#: snake.py:138
+#: __main__.py:201
 msgid "You broke some records!"
 msgstr "Вы побили рекорд!"
 
-#: snake.py:140
+#: __main__.py:204
 msgid "Please, enter your name:"
 msgstr "Пожалуйста, введите свое имя:"
 
-#: snake.py:216 snake.py:424
+#: __main__.py:328 __main__.py:624
 msgid "Scores:"
 msgstr "Очки"
 
-#: snake.py:339
+#: __main__.py:496
 msgid "Game Over"
 msgstr "Конец игры"
 
-#: snake.py:375
+#: __main__.py:559
 msgid "Snake"
 msgstr "Змейка"
 
-#: snake.py:434
+#: __main__.py:632
 msgid "Background color"
-msgstr "цвет фона"
+msgstr "Цвет фона"
 
-#: snake.py:440
+#: __main__.py:638
 msgid "Snake color"
 msgstr "Цвет змейки"
 
-#: snake.py:446
+#: __main__.py:644
 msgid "Target color"
 msgstr "Цвет цели"
 
-#: snake.py:452
+#: __main__.py:650
 msgid "Speed +"
 msgstr "Скорость +"
 
-#: snake.py:458
+#: __main__.py:656
 msgid "Speed -"
 msgstr "Скорость -"
 
-#: snake.py:464
+#: __main__.py:662
 msgid "Pause/Resume"
-msgstr "Пауза/возобновить"
+msgstr "Пауза/Возобновить"
 
-#: snake.py:470
+#: __main__.py:668
 msgid "New game"
 msgstr "Новая игра"
 
-#: snake.py:476
+#: __main__.py:674
 msgid "Quit"
 msgstr "Завершить"
