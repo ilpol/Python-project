@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ilpol/Python-project",
-    packages=setuptools.find_packages() + ['snake/rating'],
+    packages=setuptools.find_packages(),
     setup_require=["mo_installer"],
     locale_src='./snake/locale',
     classifiers=[
