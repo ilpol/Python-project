@@ -2,6 +2,7 @@ README.md
 setup.py
 snake/__init__.py
 snake/__main__.py
+snake/snake.py
 snake/snake_test.py
 snake.egg-info/PKG-INFO
 snake.egg-info/SOURCES.txt
