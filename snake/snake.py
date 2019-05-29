@@ -30,7 +30,7 @@ CUR_RATING = 0
 RATING = 10
 XMLRATING = None
 PATH = os.path.dirname(sys.argv[0])
-RATING_FILE = os.path.join(PATH, 'rating.xml') 
+RATING_FILE = os.path.join(PATH, 'rating.xml')
 PAUSE = False
 
 rating_list = {}
@@ -41,7 +41,7 @@ colors = {'fg': 'black',
           'bgcanvas': '#1c0b00',
           'bgscore': '#ed125b'}
 
-gettext.install('snake', os.path.join(os.path.dirname(__file__),'locale'))
+gettext.install('snake', os.path.join(os.path.dirname(__file__), 'locale'))
 
 '''
 Игра "Змейка"
@@ -198,18 +198,18 @@ class popupWindow(Frame):
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
         self.grid(sticky='nesw')
-        self.label1 = Label(self, text=_("You broke some records!"), 
-            bg=colors['bgbutton'], fg=colors['fg'])
+        self.label1 = Label(self, text=_("You broke some records!"),
+                            bg=colors['bgbutton'], fg=colors['fg'])
         self.label1.grid(row=0, column=0, sticky='nesw')
-        self.label2 = Label(self, text=_("Please, enter your name:"), 
-            bg=colors['bgbutton'], fg=colors['fg'])
+        self.label2 = Label(self, text=_("Please, enter your name:"),
+                            bg=colors['bgbutton'], fg=colors['fg'])
         self.label2.grid(row=1, column=0, sticky='nesw')
 
         self.name = Entry(self, bg=colors['bgscore'], fg=colors['fgscore'])
         self.name.grid(row=2, column=0, sticky='nesw')
 
         self.ok = Button(self, text='Ok', bg=colors['bgbutton'],
-            fg=colors['fg'], command=self.cleanup)
+                         fg=colors['fg'], command=self.cleanup)
         self.ok.grid(row=3, column=0, sticky='nesw')
 
     def cleanup(self):
@@ -242,8 +242,8 @@ class GameBoard(Canvas):
 
         self.master = master
         Canvas.__init__(self, master,
-            width=WIDTH+DELTA_FOR_BLOCK,
-            height=HEIGHT+DELTA_FOR_BLOCK)
+                        width=WIDTH,
+                        height=HEIGHT)
         self.init()
 
     def init(self):
@@ -412,8 +412,15 @@ class GameBoard(Canvas):
 
         r = random.randint(0, WIDTH // ELEMENT_SIZE)
         self.target_x = r * ELEMENT_SIZE
+        if (self.target_x != 0):
+            self.target_x = self.target_x - ELEMENT_SIZE
+
         r = random.randint(0, HEIGHT // ELEMENT_SIZE)
+
         self.target_y = r * ELEMENT_SIZE
+        if (self.target_y != 0):
+            self.target_y = self.target_y - ELEMENT_SIZE
+
         self.create_rectangle(self.target_x, self.target_y,
                               self.target_x + DELTA_FOR_BLOCK,
                               self.target_y + DELTA_FOR_BLOCK,
@@ -474,8 +481,9 @@ class GameBoard(Canvas):
 
         else:
             self.after(DELAY, self.onTimer)
-        WIDTH = self.winfo_width()
-        HEIGHT = self.winfo_height()
+
+        WIDTH = self.winfo_width() - 2
+        HEIGHT = self.winfo_height() - 2
 
     def gameOver(self):
         """
@@ -612,9 +620,11 @@ class MyApp(Frame):
         self.ControlFrame = Frame(self)
         self.ControlFrame.grid(row=0, column=2, sticky='nesw')
 
-        self.ControlFrame.Tmp = Label(self, bg=colors['bgbutton'],
-            fg=colors['fg'], textvariable=RATING_LABEL, width = 10)
-        self.ControlFrame.Tmp.grid(row=0, column=0,
+        self.ControlFrame.Tmp = Label(
+            self, bg=colors['bgbutton'],
+            fg=colors['fg'], textvariable=RATING_LABEL, width=10)
+        self.ControlFrame.Tmp.grid(
+            row=0, column=0,
             rowspan=10, sticky='nesw')
 
         self.Canvas = GameBoard(self)
@@ -624,7 +634,8 @@ class MyApp(Frame):
         tmp_label = _("Scores:") + '\n' + str(COUNT)
         COUNT_LABEL.set(tmp_label)
 
-        self.ControlFrame.ShowColor = Label(self, bg=colors['bgscore'],
+        self.ControlFrame.ShowColor = Label(
+            self, bg=colors['bgscore'],
             fg=colors['fgscore'], textvariable=COUNT_LABEL)
         self.ControlFrame.ShowColor.grid(row=0, column=2, sticky='nesw')
 
